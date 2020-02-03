@@ -18,27 +18,34 @@ export default class GroupView extends React.Component {
     OrganisationDetail(id)
       .then(response => {
         console.log(response.data);
-        let list = [];
-        let item = '';
-        response.data.groups_details.map(obj => {
-          item = (
-            <List.Item
-              key={obj.id}
-              title={obj.title}
-              description={`Students : ${obj.students_count}`}
-              right={props => <List.Icon {...props} icon="arrow-right" />}
-              onPress={() => {
-                this.goToDetail(obj.id);
-              }}
-            />
-          );
-          list.push(item);
+        this.setState({
+          groupList: response.data.groups_details,
+          loading: false,
         });
-        this.setState({groupList: list, loading: false});
       })
       .catch(error => {
         console.log(error.response);
       });
+  };
+
+  getListItems = () => {
+    let list = [];
+    let item = '';
+    this.state.groupList.map(obj => {
+      item = (
+        <List.Item
+          key={obj.id}
+          title={obj.title}
+          description={`Students : ${obj.students_count}`}
+          right={props => <List.Icon {...props} icon="arrow-right" />}
+          onPress={() => {
+            this.goToDetail(obj.id);
+          }}
+        />
+      );
+      list.push(item);
+    });
+    return list;
   };
 
   goToDetail = id => {
@@ -56,7 +63,7 @@ export default class GroupView extends React.Component {
               style={{padding: '10%'}}
             />
           )}
-          {!this.state.loading && this.state.groupList}
+          {!this.state.loading && this.getListItems()}
         </ScrollView>
       </SafeAreaView>
     );

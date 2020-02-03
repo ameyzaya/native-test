@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import {SafeAreaView, View, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 import {Dropdown} from 'react-native-material-dropdown';
 import {GradeList, PassageList} from '../../api/organisation';
@@ -12,6 +12,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     // alignItems: 'center',
     backgroundColor: 'teal',
+  },
+  view: {
+    alignSelf: 'center',
+    justifyContent: 'space-evenly',
+    width: '75%',
+    height: '100%',
   },
   drop: {alignSelf: 'center', width: 200},
 });
@@ -82,34 +88,36 @@ export default class StudentSelect extends React.Component {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <Dropdown
-          label="Select Grade*"
-          data={this.state.gradeList}
-          value={this.state.gradeVal}
-          // error={touched.groupVal ? errors.groupVal : ''}
-          baseColor={'white'}
-          // selectedItemColor={'white'}
-          // onBlur={() => setFieldTouched('groupVal')}
-          onChangeText={(value, index, data) => {
-            // values.groupVal = value;
-            this.handleGradeDropdown(value, index, data);
-          }}
-          style={styles.drop}
-        />
-        <Dropdown
-          label="Select Passage*"
-          data={this.state.passageList}
-          value={this.state.passageVal}
-          // error={touched.passageVal ? errors.passageVal : ''}
-          baseColor={'white'}
-          // selectedItemColor={'white'}
-          // onBlur={() => setFieldTouched('passageVal')}
-          onChangeText={(value, index, data) => {
-            // values.passageVal = value;
-            this.handlePassageDropdown(value, index, data);
-          }}
-          style={styles.drop}
-        />
+        <View style={styles.view}>
+          <Dropdown
+            label="Select Grade*"
+            data={this.state.gradeList}
+            value={this.state.gradeVal}
+            // error={touched.groupVal ? errors.groupVal : ''}
+            baseColor={'white'}
+            // selectedItemColor={'white'}
+            // onBlur={() => setFieldTouched('groupVal')}
+            onChangeText={(value, index, data) => {
+              // values.groupVal = value;
+              this.handleGradeDropdown(value, index, data);
+            }}
+            style={styles.drop}
+          />
+          <Dropdown
+            label="Select Passage*"
+            data={this.state.passageList}
+            value={this.state.passageVal}
+            // error={touched.passageVal ? errors.passageVal : ''}
+            baseColor={'white'}
+            // selectedItemColor={'white'}
+            // onBlur={() => setFieldTouched('passageVal')}
+            onChangeText={(value, index, data) => {
+              // values.passageVal = value;
+              this.handlePassageDropdown(value, index, data);
+            }}
+            style={styles.drop}
+          />
+        </View>
       </SafeAreaView>
     );
   }

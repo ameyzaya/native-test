@@ -13,19 +13,19 @@ export default createMaterialBottomTabNavigator(
     Form: {
       screen: IssueForm,
       navigationOptions: {
-        tabBarIcon: () => <IconButton icon="details" color="white" />,
+        tabBarIcon: () => <IconButton icon="details" color="white" size={17} />,
       },
     },
     List: {
       screen: ListIssue,
       navigationOptions: {
-        tabBarIcon: () => <IconButton icon="details" color="white" />,
+        tabBarIcon: () => <IconButton icon="details" color="white" size={17} />,
       },
     },
     Detail: {
       screen: DetailIssue,
       navigationOptions: {
-        tabBarIcon: () => <IconButton icon="details" color="white" />,
+        tabBarIcon: () => <IconButton icon="details" color="white" size={17} />,
       },
     },
   },
@@ -33,7 +33,7 @@ export default createMaterialBottomTabNavigator(
     initialRouteName: 'List',
     activeColor: 'skyblue',
     inactiveColor: 'white',
-    // barStyle: {backgroundColor: 'darkblue'},
+    // barStyle: {},
     shifting: true,
   },
 );

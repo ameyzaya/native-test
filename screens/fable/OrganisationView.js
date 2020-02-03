@@ -18,29 +18,33 @@ export default class OrganisationView extends React.Component {
     OrganisationList()
       .then(response => {
         console.log(response.data);
-        let list = [];
-        let item = '';
-        response.data.results.map(obj => {
-          item = (
-            <List.Item
-              key={obj.id}
-              title={obj.title}
-              description={`Students : ${obj.students_count}`}
-              right={props => (
-                <List.Icon color={Colors.blue500} icon="arrow-right" />
-              )}
-              onPress={() => {
-                this.goToDetail(obj.id);
-              }}
-            />
-          );
-          list.push(item);
-        });
-        this.setState({orgList: list, loading: false});
+        this.setState({orgList: response.data.results, loading: false});
       })
       .catch(error => {
         console.log(error.response);
       });
+  };
+
+  getListItems = () => {
+    let list = [];
+    let item = '';
+    this.state.orgList.map(obj => {
+      item = (
+        <List.Item
+          key={obj.id}
+          title={obj.title}
+          description={`Students : ${obj.students_count}`}
+          right={props => (
+            <List.Icon color={Colors.blue500} icon="arrow-right" />
+          )}
+          onPress={() => {
+            this.goToDetail(obj.id);
+          }}
+        />
+      );
+      list.push(item);
+    });
+    return list;
   };
 
   goToDetail = id => {
@@ -73,7 +77,7 @@ export default class OrganisationView extends React.Component {
               style={{padding: '10%'}}
             />
           )}
-          {!this.state.loading && this.state.orgList}
+          {!this.state.loading && this.getListItems()}
         </ScrollView>
       </SafeAreaView>
     );

@@ -18,23 +18,27 @@ export default class OrganisationView extends React.Component {
     StudentList({group__id: id})
       .then(response => {
         console.log(response.data);
-        let list = [];
-        let item = '';
-        response.data.results.map(obj => {
-          item = (
-            <List.Item
-              key={obj.id}
-              title={obj.user_detail.full_name}
-              right={props => <List.Icon {...props} icon="arrow-right" />}
-            />
-          );
-          list.push(item);
-        });
-        this.setState({studentList: list, loading: false});
+        this.setState({studentList: response.data.results, loading: false});
       })
       .catch(error => {
         console.log(error.response);
       });
+  };
+
+  getListItems = () => {
+    let list = [];
+    let item = '';
+    this.state.studentList.map(obj => {
+      item = (
+        <List.Item
+          key={obj.id}
+          title={obj.user_detail.full_name}
+          // right={props => <List.Icon {...props} icon="arrow-right" />}
+        />
+      );
+      list.push(item);
+    });
+    return list;
   };
 
   render() {
@@ -48,7 +52,7 @@ export default class OrganisationView extends React.Component {
               style={{padding: '10%'}}
             />
           )}
-          {!this.state.loading && this.state.studentList}
+          {!this.state.loading && this.getListItems()}
         </ScrollView>
       </SafeAreaView>
     );

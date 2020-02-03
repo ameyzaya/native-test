@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import {SafeAreaView, View, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 import {Dropdown} from 'react-native-material-dropdown';
 import {OrganisationDetail, StudentList} from '../../api/organisation';
@@ -9,9 +9,15 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
     // alignItems: 'center',
     backgroundColor: 'teal',
+  },
+  view: {
+    alignSelf: 'center',
+    justifyContent: 'space-evenly',
+    width: '75%',
+    height: '100%',
   },
   drop: {alignSelf: 'center', width: 200},
 });
@@ -83,40 +89,42 @@ export default class StudentSelect extends React.Component {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <Dropdown
-          label="Select Group*"
-          data={this.state.groupList}
-          value={this.state.groupVal}
-          // error={touched.groupVal ? errors.groupVal : ''}
-          baseColor={'white'}
-          // selectedItemColor={'white'}
-          // onBlur={() => setFieldTouched('groupVal')}
-          onChangeText={(value, index, data) => {
-            // values.groupVal = value;
-            this.handleGroupDropdown(value, index, data);
-          }}
-          style={styles.drop}
-        />
-        <Dropdown
-          label="Select Student*"
-          data={this.state.studentList}
-          value={this.state.studentVal}
-          // error={touched.studentVal ? errors.studentVal : ''}
-          baseColor={'white'}
-          // selectedItemColor={'white'}
-          // onBlur={() => setFieldTouched('studentVal')}
-          onChangeText={(value, index, data) => {
-            // values.studentVal = value;
-            this.handleStudentDropdown(value, index, data);
-          }}
-          style={styles.drop}
-        />
-        <Button
-          mode="contained"
-          style={{width: '40%', alignSelf: 'center'}}
-          onPress={() => this.props.navigation.navigate('PassageSelect')}>
-          OK
-        </Button>
+        <View style={styles.view}>
+          <Dropdown
+            label="Select Group*"
+            data={this.state.groupList}
+            value={this.state.groupVal}
+            // error={touched.groupVal ? errors.groupVal : ''}
+            baseColor={'white'}
+            // selectedItemColor={'white'}
+            // onBlur={() => setFieldTouched('groupVal')}
+            onChangeText={(value, index, data) => {
+              // values.groupVal = value;
+              this.handleGroupDropdown(value, index, data);
+            }}
+            style={styles.drop}
+          />
+          <Dropdown
+            label="Select Student*"
+            data={this.state.studentList}
+            value={this.state.studentVal}
+            // error={touched.studentVal ? errors.studentVal : ''}
+            baseColor={'white'}
+            // selectedItemColor={'white'}
+            // onBlur={() => setFieldTouched('studentVal')}
+            onChangeText={(value, index, data) => {
+              // values.studentVal = value;
+              this.handleStudentDropdown(value, index, data);
+            }}
+            style={styles.drop}
+          />
+          <Button
+            mode="contained"
+            style={{width: '40%', alignSelf: 'center'}}
+            onPress={() => this.props.navigation.navigate('PassageSelect')}>
+            OK
+          </Button>
+        </View>
       </SafeAreaView>
     );
   }
