@@ -1,5 +1,10 @@
 import React from 'react';
-import {SafeAreaView, ScrollView, RefreshControl} from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  RefreshControl,
+  TouchableOpacity,
+} from 'react-native';
 import {List, Colors, ActivityIndicator} from 'react-native-paper';
 import {OrganisationList} from '../../api/organisation';
 
@@ -30,17 +35,19 @@ export default class OrganisationView extends React.Component {
     let item = '';
     this.state.orgList.map(obj => {
       item = (
-        <List.Item
-          key={obj.id}
-          title={obj.title}
-          description={`Students : ${obj.students_count}`}
-          right={props => (
-            <List.Icon color={Colors.blue500} icon="arrow-right" />
-          )}
+        <TouchableOpacity
           onPress={() => {
             this.goToDetail(obj.id);
-          }}
-        />
+          }}>
+          <List.Item
+            key={obj.id}
+            title={obj.title}
+            description={`Students : ${obj.students_count}`}
+            right={props => (
+              <List.Icon color={Colors.blue500} icon="arrow-right" />
+            )}
+          />
+        </TouchableOpacity>
       );
       list.push(item);
     });
@@ -63,7 +70,7 @@ export default class OrganisationView extends React.Component {
     return (
       <SafeAreaView>
         <ScrollView
-          style={{backgroundColor: 'lavender', height: '100%'}}
+          style={{height: '100%'}}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}

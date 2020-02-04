@@ -10,6 +10,7 @@ import {
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {Login} from '../api/auth';
+import {NavigationActions, StackActions} from 'react-navigation';
 
 // let yup = require('yup');
 
@@ -38,11 +39,11 @@ class LoginScreen extends React.Component {
     // password: '',
     rememberMe: false,
     snackbarVisible: false,
-    loading: true,
+    loading: false,
   };
 
   componentDidMount() {
-    this.retrieveToken();
+    // this.retrieveToken();
   }
 
   storeToken = async key => {
@@ -53,16 +54,17 @@ class LoginScreen extends React.Component {
     }
   };
 
-  retrieveToken = async () => {
-    await AsyncStorage.getItem('ACCESS_TOKEN', (err, result) => {
-      if (result && result !== null) {
-        this.props.navigation.navigate('Home');
-      }
-      setTimeout(() => {
-        this.setState({loading: false});
-      }, 1000);
-    });
-  };
+  // retrieveToken = async () => {
+  //   await AsyncStorage.getItem('ACCESS_TOKEN', (err, result) => {
+  //     if (result && result !== null) {
+  //       // this.props.navigation.navigate('Home');
+  //       this.resetStack();
+  //     }
+  //     setTimeout(() => {
+  //       this.setState({loading: false});
+  //     }, 1000);
+  //   });
+  // };
 
   handleSubmit = (values, setSubmitting) => {
     console.log(values.username, values.password);
@@ -73,7 +75,8 @@ class LoginScreen extends React.Component {
     Login(payload)
       .then(response => {
         this.storeToken(response.data.key);
-        this.props.navigation.navigate('Home');
+        // this.props.navigation.navigate('Home');
+        this.resetStack();
       })
       .catch(error => {
         console.log(error.response);
@@ -82,6 +85,15 @@ class LoginScreen extends React.Component {
       .finally(() => {
         setSubmitting(false);
       });
+  };
+
+  resetStack = () => {
+    const resetAction = StackActions.reset({
+      index: 0,
+      key: null,
+      actions: [NavigationActions.navigate({routeName: 'Home'})],
+    });
+    this.props.navigation.dispatch(resetAction);
   };
 
   handleCheck = () => {
@@ -113,6 +125,18 @@ class LoginScreen extends React.Component {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
+            <Snackbar
+              visible={this.state.snackbarVisible}
+              onDismiss={() => this.setState({snackbarVisible: false})}
+              style={{}}
+              action={{
+                label: 'Ok',
+                onPress: () => {
+                  this.setState({snackbarVisible: false});
+                },
+              }}>
+              Invalid Credentials.
+            </Snackbar>
             {this.state.loading && (
               <ActivityIndicator animating={true} style={{marginTop: 50}} />
             )}
@@ -163,17 +187,6 @@ class LoginScreen extends React.Component {
                   disabled={!isValid || isSubmitting}>
                   Submit
                 </Button>
-                <Snackbar
-                  visible={this.state.snackbarVisible}
-                  onDismiss={() => this.setState({snackbarVisible: false})}
-                  action={{
-                    label: 'Ok',
-                    onPress: () => {
-                      this.setState({snackbarVisible: false});
-                    },
-                  }}>
-                  Invalid Credentials.
-                </Snackbar>
               </View>
             )}
           </View>

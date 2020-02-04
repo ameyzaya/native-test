@@ -1,8 +1,10 @@
 import React from 'react';
 import {SafeAreaView, View, StyleSheet} from 'react-native';
-import {Button} from 'react-native-paper';
+import {Button, Text} from 'react-native-paper';
 import {Dropdown} from 'react-native-material-dropdown';
 import {OrganisationDetail, StudentList} from '../../api/organisation';
+import SearchableDropdown from 'react-native-searchable-dropdown';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,16 +12,15 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     justifyContent: 'center',
-    // alignItems: 'center',
-    backgroundColor: 'teal',
   },
   view: {
-    alignSelf: 'center',
-    justifyContent: 'space-evenly',
-    width: '75%',
+    // justifyContent: 'center',
+    width: '100%',
     height: '100%',
+    marginTop: '35%',
   },
-  drop: {alignSelf: 'center', width: 200},
+  drop: {alignSelf: 'center', width: '75%'},
+  error: {color: 'red', fontSize: 14, marginLeft: '15%', marginBottom: 10},
 });
 
 export default class StudentSelect extends React.Component {
@@ -32,6 +33,11 @@ export default class StudentSelect extends React.Component {
     groupId: '',
     studentId: '',
     loading: true,
+    errors: {
+      group: '',
+      student: '',
+    },
+    resetStudents: false,
   };
 
   componentDidMount() {
@@ -44,7 +50,7 @@ export default class StudentSelect extends React.Component {
         let list = [];
         let item = '';
         response.data.groups_details.map(obj => {
-          item = {id: obj.id, value: obj.title};
+          item = {id: obj.id, name: obj.title};
           list.push(item);
         });
         this.setState({groupList: list});
@@ -62,7 +68,7 @@ export default class StudentSelect extends React.Component {
         let list = [];
         let item = '';
         response.data.results.map(obj => {
-          item = {id: obj.id, value: obj.user_detail.full_name};
+          item = {id: obj.id, name: obj.user_detail.full_name};
           list.push(item);
         });
         this.setState({studentList: list});
@@ -72,56 +78,119 @@ export default class StudentSelect extends React.Component {
       });
   };
 
-  handleGroupDropdown = (value, index, data) => {
+  handleGroupDropdown = item => {
+    let err = this.state.errors;
+    err.group = '';
     this.setState({
-      groupId: data[index].id,
-      groupVal: value,
+      groupId: item.id,
+      groupVal: item.name,
+      studentList: [],
       studentId: '',
       studentVal: '',
+      errors: err,
     });
     this.getStudents();
   };
 
-  handleStudentDropdown = (value, index, data) => {
-    this.setState({studentId: data[index].id, studentVal: value});
+  handleStudentDropdown = item => {
+    let err = this.state.errors;
+    err.student = '';
+    this.setState({studentId: item.id, studentVal: item.name, errors: err});
+  };
+
+  handleSubmit = () => {
+    if (this.state.groupId.length && this.state.studentId.length)
+      this.props.navigation.navigate('PassageSelect');
+    else {
+      let err = this.state.errors;
+      if (!this.state.groupId.length) err.group = 'required';
+      if (!this.state.studentId.length) err.student = 'required';
+      this.setState({errors: err});
+    }
   };
 
   render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.view}>
-          <Dropdown
-            label="Select Group*"
-            data={this.state.groupList}
-            value={this.state.groupVal}
-            // error={touched.groupVal ? errors.groupVal : ''}
-            baseColor={'white'}
-            // selectedItemColor={'white'}
-            // onBlur={() => setFieldTouched('groupVal')}
-            onChangeText={(value, index, data) => {
-              // values.groupVal = value;
-              this.handleGroupDropdown(value, index, data);
+          <SearchableDropdown
+            onTextChange={text => {}}
+            onItemSelect={item => this.handleGroupDropdown(item)}
+            containerStyle={{padding: 5}}
+            textInputStyle={{
+              ...styles.drop,
+              padding: 12,
+              borderWidth: 1,
+              borderColor: '#ccc',
+              backgroundColor: '#FAF7F6',
             }}
-            style={styles.drop}
-          />
-          <Dropdown
-            label="Select Student*"
-            data={this.state.studentList}
-            value={this.state.studentVal}
-            // error={touched.studentVal ? errors.studentVal : ''}
-            baseColor={'white'}
-            // selectedItemColor={'white'}
-            // onBlur={() => setFieldTouched('studentVal')}
-            onChangeText={(value, index, data) => {
-              // values.studentVal = value;
-              this.handleStudentDropdown(value, index, data);
+            itemStyle={{
+              padding: 10,
+              marginTop: 2,
+              backgroundColor: '#FAF9F8',
+              borderColor: '#bbb',
+              borderWidth: 1,
             }}
-            style={styles.drop}
+            itemTextStyle={{
+              color: '#222',
+            }}
+            itemsContainerStyle={{
+              ...styles.drop,
+              maxHeight: '65%',
+            }}
+            items={this.state.groupList}
+            placeholder="Select Group*"
+            resetValue={false}
+            underlineColorAndroid="transparent"
           />
+          <Text style={styles.error}>
+            {this.state.errors.group.length ? this.state.errors.group : ''}
+          </Text>
+
+          <SearchableDropdown
+            key={this.state.groupId}
+            onTextChange={text => {}}
+            onItemSelect={item => this.handleStudentDropdown(item)}
+            containerStyle={{padding: 5}}
+            textInputStyle={{
+              ...styles.drop,
+              marginTop: 5,
+              padding: 12,
+              borderWidth: 1,
+              borderColor: '#ccc',
+              backgroundColor: '#FAF7F6',
+            }}
+            itemStyle={{
+              padding: 10,
+              marginTop: 2,
+              backgroundColor: '#FAF9F8',
+              borderColor: '#bbb',
+              borderWidth: 1,
+            }}
+            itemTextStyle={{
+              color: '#222',
+            }}
+            itemsContainerStyle={{
+              ...styles.drop,
+              maxHeight: '65%',
+            }}
+            items={this.state.studentList}
+            placeholder={
+              this.state.groupId.length && this.state.studentList.length
+                ? 'Select Student*'
+                : 'No Student to select'
+            }
+            resetValue={this.state.resetStudents}
+            underlineColorAndroid="transparent"
+          />
+          <Text style={styles.error}>
+            {this.state.errors.student.length ? this.state.errors.student : ''}
+          </Text>
+
           <Button
             mode="contained"
-            style={{width: '40%', alignSelf: 'center'}}
-            onPress={() => this.props.navigation.navigate('PassageSelect')}>
+            style={{width: '40%', marginTop: '15%', alignSelf: 'center'}}
+            onPress={() => this.handleSubmit()}>
             OK
           </Button>
         </View>

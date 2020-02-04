@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   container: {
     padding: '10%',
     width: '100%',
-    backgroundColor: '#dfe6f1',
+    // backgroundColor: '#dfe6f1',
   },
 });
 
@@ -33,6 +33,7 @@ export default class IssueDetailView extends React.Component {
     statusVal: '',
     assignedToVal: '',
     userList: [],
+    dataFound: true,
   };
 
   componentDidMount() {
@@ -45,7 +46,7 @@ export default class IssueDetailView extends React.Component {
     IssueDetail(id)
       .then(response => {
         console.log(response.data);
-        this.setState({issue: response.data, loading: false});
+        this.setState({issue: response.data, loading: false, dataFound: true});
         this.getPriority(response.data.priority);
         this.getStatus(response.data.status);
         if (response.data.assigned_to)
@@ -53,6 +54,10 @@ export default class IssueDetailView extends React.Component {
       })
       .catch(error => {
         console.log(error);
+        this.setState({dataFound: false});
+      })
+      .finally(() => {
+        this.setState({loading: false});
       });
   };
 
@@ -127,7 +132,10 @@ export default class IssueDetailView extends React.Component {
         {this.state.loading && (
           <ActivityIndicator animating={true} size={'large'} />
         )}
-        {!this.state.loading && (
+        {!this.state.loading && !this.state.dataFound && (
+          <Text>No data found</Text>
+        )}
+        {!this.state.loading && this.state.dataFound && (
           <View>
             <Text style={{fontWeight: 'bold', fontSize: 24}}>{title}</Text>
             <Text style={{marginTop: '5%'}}>{description}</Text>

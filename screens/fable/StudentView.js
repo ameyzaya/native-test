@@ -1,6 +1,6 @@
 import React from 'react';
 import {SafeAreaView, ScrollView} from 'react-native';
-import {List, ActivityIndicator} from 'react-native-paper';
+import {List, ActivityIndicator, Text} from 'react-native-paper';
 import {StudentList} from '../../api/organisation';
 
 export default class OrganisationView extends React.Component {
@@ -44,13 +44,18 @@ export default class OrganisationView extends React.Component {
   render() {
     return (
       <SafeAreaView>
-        <ScrollView style={{backgroundColor: 'lavender', height: '100%'}}>
+        <ScrollView style={{height: '100%'}}>
           {this.state.loading && (
             <ActivityIndicator
               animating={true}
               size={'large'}
               style={{padding: '10%'}}
             />
+          )}
+          {!this.state.loading && !this.state.studentList.length && (
+            <Text style={{paddingTop: 25, paddingLeft: 25}}>
+              No student present
+            </Text>
           )}
           {!this.state.loading && this.getListItems()}
         </ScrollView>

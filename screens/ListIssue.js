@@ -1,6 +1,6 @@
 import React from 'react';
 import {ScrollView} from 'react-native';
-import {Button, List, ActivityIndicator} from 'react-native-paper';
+import {Button, Text, List, ActivityIndicator} from 'react-native-paper';
 import {IssueList} from '../api/issue';
 
 export default class IssueListView extends React.Component {
@@ -43,6 +43,9 @@ export default class IssueListView extends React.Component {
       })
       .catch(error => {
         console.log(error.response);
+      })
+      .finally(() => {
+        this.setState({loading: false});
       });
   };
 
@@ -53,7 +56,7 @@ export default class IssueListView extends React.Component {
 
   render() {
     return (
-      <ScrollView style={{height: '100%', backgroundColor: '#dfe6f1'}}>
+      <ScrollView style={{height: '100%'}}>
         {this.state.loading && (
           <ActivityIndicator
             animating={true}
@@ -61,7 +64,10 @@ export default class IssueListView extends React.Component {
             style={{padding: '10%'}}
           />
         )}
-        {this.state.list}
+        {!!this.state.list.length && this.state.list}
+        {!this.state.list.length && !this.state.loading && (
+          <Text style={{padding: '10%'}}>No data found</Text>
+        )}
       </ScrollView>
     );
   }

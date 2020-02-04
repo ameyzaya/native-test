@@ -2,11 +2,20 @@ import React from 'react';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
+import LoginScreen from '../screens/LoginScreen';
+import NoInternet from '../screens/NoInternet';
+import LoaderScreen from '../screens/LoaderScreen';
 
 export default AppNavigator = createAppContainer(
-  createSwitchNavigator({
-    // You could add another route here for authentication.
-    // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-    Main: MainTabNavigator,
-  }),
+  createSwitchNavigator(
+    {
+      Loader: LoaderScreen,
+      Main: MainTabNavigator,
+      Login: LoginScreen,
+      NoInternet: NoInternet,
+    },
+    {
+      initialRouteName: 'Loader',
+    },
+  ),
 );

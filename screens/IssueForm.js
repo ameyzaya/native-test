@@ -129,7 +129,7 @@ class IssueForm extends React.Component {
             style={{
               flex: 1,
               // backgroundColor: '#dfe6f1',
-              backgroundColor: 'skyblue',
+              backgroundColor: 'white',
               width: '100%',
               height: '100%',
             }}>
@@ -145,7 +145,7 @@ class IssueForm extends React.Component {
                   textDecorationLine: 'underline',
                   fontSize: 24,
                   marginTop: '5%',
-                  color: 'white',
+                  color: '#aaaaaa',
                 }}>
                 Issue Form
               </Text>
@@ -175,7 +175,7 @@ class IssueForm extends React.Component {
                 data={this.state.productList}
                 value={values.productVal}
                 error={touched.productVal ? errors.productVal : ''}
-                baseColor={'white'}
+                // baseColor={'white'}
                 // selectedItemColor={'white'}
                 onBlur={() => setFieldTouched('productVal')}
                 onChangeText={(value, index, data) => {
@@ -188,7 +188,7 @@ class IssueForm extends React.Component {
                 data={this.state.priorityList}
                 value={values.priorityVal}
                 error={touched.priorityVal ? errors.priorityVal : ''}
-                baseColor={'white'}
+                // baseColor={'white'}
                 onBlur={() => setFieldTouched('priorityVal')}
                 onChangeText={(value, index, data) => {
                   values.priorityVal = value;

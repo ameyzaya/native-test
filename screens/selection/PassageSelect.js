@@ -1,25 +1,25 @@
 import React from 'react';
 import {SafeAreaView, View, StyleSheet} from 'react-native';
-import {Button} from 'react-native-paper';
+import {Button, text} from 'react-native-paper';
 import {Dropdown} from 'react-native-material-dropdown';
 import {GradeList, PassageList} from '../../api/organisation';
+import SearchableDropdown from 'react-native-searchable-dropdown';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
     height: '100%',
-    justifyContent: 'space-evenly',
-    // alignItems: 'center',
-    backgroundColor: 'teal',
+    justifyContent: 'center',
   },
   view: {
-    alignSelf: 'center',
-    justifyContent: 'space-evenly',
-    width: '75%',
+    // justifyContent: 'center',
+    width: '100%',
     height: '100%',
+    marginTop: '35%',
   },
-  drop: {alignSelf: 'center', width: 200},
+  drop: {alignSelf: 'center', width: '75%', marginTop: 10},
+  error: {color: 'red', fontSize: 14, marginLeft: '15%', marginBottom: 10},
 });
 
 export default class StudentSelect extends React.Component {
@@ -43,7 +43,7 @@ export default class StudentSelect extends React.Component {
         let list = [];
         let item = '';
         response.data.results.map(obj => {
-          item = {id: obj.id, value: obj.title};
+          item = {id: obj.id, name: obj.title};
           list.push(item);
         });
         this.setState({gradeList: list});
@@ -61,7 +61,7 @@ export default class StudentSelect extends React.Component {
         let list = [];
         let item = '';
         response.data.results.map(obj => {
-          item = {id: obj.id, value: obj.passage_name};
+          item = {id: obj.id, name: obj.passage_name};
           list.push(item);
         });
         this.setState({passageList: list});
@@ -71,30 +71,31 @@ export default class StudentSelect extends React.Component {
       });
   };
 
-  handleGradeDropdown = (value, index, data) => {
+  handleGradeDropdown = item => {
     this.setState({
-      gradeId: data[index].id,
-      gradeVal: value,
+      gradeId: item.id,
+      gradeVal: item.name,
+      passageList: [],
       passageId: '',
       passageVal: '',
     });
     this.getPassages();
   };
 
-  handlePassageDropdown = (value, index, data) => {
-    this.setState({passageId: data[index].id, passageVal: value});
+  handlePassageDropdown = item => {
+    this.setState({passageId: item.id, passageVal: item.name});
   };
 
   render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.view}>
-          <Dropdown
+          {/* <Dropdown
             label="Select Grade*"
             data={this.state.gradeList}
             value={this.state.gradeVal}
             // error={touched.groupVal ? errors.groupVal : ''}
-            baseColor={'white'}
+            // baseColor={'white'}
             // selectedItemColor={'white'}
             // onBlur={() => setFieldTouched('groupVal')}
             onChangeText={(value, index, data) => {
@@ -102,13 +103,77 @@ export default class StudentSelect extends React.Component {
               this.handleGradeDropdown(value, index, data);
             }}
             style={styles.drop}
+          /> */}
+
+          <SearchableDropdown
+            onTextChange={text => {}}
+            onItemSelect={item => this.handleGradeDropdown(item)}
+            containerStyle={{padding: 5}}
+            textInputStyle={{
+              ...styles.drop,
+              padding: 12,
+              borderWidth: 1,
+              borderColor: '#ccc',
+              backgroundColor: '#FAF7F6',
+            }}
+            itemStyle={{
+              padding: 10,
+              marginTop: 2,
+              backgroundColor: '#FAF9F8',
+              borderColor: '#bbb',
+              borderWidth: 1,
+            }}
+            itemTextStyle={{
+              color: '#222',
+            }}
+            itemsContainerStyle={{
+              ...styles.drop,
+              maxHeight: '65%',
+            }}
+            items={this.state.gradeList}
+            placeholder="Select Grade*"
+            resetValue={false}
+            underlineColorAndroid="transparent"
           />
-          <Dropdown
+
+          <SearchableDropdown
+            key={this.state.gradeId}
+            onTextChange={text => {}}
+            onItemSelect={item => this.handlePassageDropdown(item)}
+            containerStyle={{padding: 5}}
+            textInputStyle={{
+              ...styles.drop,
+              padding: 12,
+              borderWidth: 1,
+              borderColor: '#ccc',
+              backgroundColor: '#FAF7F6',
+            }}
+            itemStyle={{
+              padding: 10,
+              marginTop: 2,
+              backgroundColor: '#FAF9F8',
+              borderColor: '#bbb',
+              borderWidth: 1,
+            }}
+            itemTextStyle={{
+              color: '#222',
+            }}
+            itemsContainerStyle={{
+              ...styles.drop,
+              maxHeight: '65%',
+            }}
+            items={this.state.passageList}
+            placeholder="Select Passage*"
+            resetValue={false}
+            underlineColorAndroid="transparent"
+          />
+
+          {/* <Dropdown
             label="Select Passage*"
             data={this.state.passageList}
             value={this.state.passageVal}
             // error={touched.passageVal ? errors.passageVal : ''}
-            baseColor={'white'}
+            // baseColor={'white'}
             // selectedItemColor={'white'}
             // onBlur={() => setFieldTouched('passageVal')}
             onChangeText={(value, index, data) => {
@@ -116,7 +181,7 @@ export default class StudentSelect extends React.Component {
               this.handlePassageDropdown(value, index, data);
             }}
             style={styles.drop}
-          />
+          /> */}
         </View>
       </SafeAreaView>
     );
